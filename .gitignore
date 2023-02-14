@@ -1,3 +1,9 @@
+/lib
+/builds
+
+/**Versions.json
+/**Versions.jsonl
+
 # Logs
 logs
 *.log
@@ -67,6 +73,9 @@ typings/
 
 # Yarn Integrity file
 .yarn-integrity
+
+# secrets folder
+secrets/
 
 # dotenv environment variables file
 .env
