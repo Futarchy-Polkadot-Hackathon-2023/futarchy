@@ -1,7 +1,7 @@
 Please add...
-  links to any major libraries we import or use (eg IPFS)
- credit for any copied code
- separate instructions to install and run in the *installation* and *run* sections
+. links to any significant libraries we import or use (eg IPFS)
+. credit for any copied code
+. separate instructions to install and run in the *installation* and *run* sections
  
 _____________________________________________________________________
 
