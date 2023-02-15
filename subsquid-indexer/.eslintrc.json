@@ -25,7 +25,7 @@
         "accessor-pairs": "warn",
         "array-callback-return": "warn",
         "array-element-newline": "off",
-        "arrow-body-style": "warn",
+        "arrow-body-style": "off",
         "block-scoped-var": "warn",
         "brace-style": [
             "warn",

@@ -68,17 +68,17 @@ type Ctx = BatchContext<Store, Item>
 
 
 processor.run(new TypeormDatabase(), async ctx => {
-    let bountiesData = getBounties(ctx)
+    const bountiesData = getBounties(ctx)
 
-    let accountIds = new Set<string>()
-    let accounts = await ctx.store.findBy(Account, {id: In([...accountIds])}).then(accounts => {
+    const accountIds = new Set<string>()
+    const accounts = await ctx.store.findBy(Account, {id: In([...accountIds])}).then(accounts => {
         return new Map(accounts.map(a => [a.id, a]))
     })
 
-    let bountiesToStore: Proposal[] = []
+    const bountiesToStore: Proposal[] = []
 
     for (let b of bountiesData) {
-        let {
+        const {
             id, blockNumber, timestamp, eventName, proposalIndex, 
             extrinsicId, beneficiary, // approve, // proposer?: 
             fee 
@@ -124,10 +124,10 @@ interface TreasuryEvent {
 // NB These loops will run for every call and event, not just Bounty -related ones.
 // and they will run once for the event, then once for the call.
 function getBounties(ctx: Ctx): TreasuryEvent[] {
-    let blockBountiesLength = 0;
-    let bounties: TreasuryEvent[] = []
-    for (let block of ctx.blocks) {
-        for (let item of block.items) {
+    // const blockBountiesLength = 0;
+    const bounties: TreasuryEvent[] = []
+    for (const block of ctx.blocks) {
+        for (const item of block.items) {
 
             switch (item.name) {
                 case "Treasury.Proposed": {         
