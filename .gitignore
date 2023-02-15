@@ -76,6 +76,7 @@ typings/
 
 # secrets folder
 secrets/
+.secrets/
 
 # dotenv environment variables file
 .env
