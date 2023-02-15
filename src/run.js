@@ -104,12 +104,15 @@ const bootstrap = ()=> new Promise (async (resolve, reject) => {
   // Let's work on live markets instead of filtering all events from squid
   // const newCloseToEndingBounties = knownBountiesState
   //   .filter(....
-  const newCloseToEndingBounties = await squidQuery.byProposalIndexes({ 
+  const newCloseToEndingBounties = (await squidQuery.byProposalIndexes({ 
       proposals: markets.deployed.live.filter(market => market.proposalIndex)
-    })
+    }))
     // The following can be more detailed filter to distinguish between, eg 'will it become active' and 'will it get paid'
-    .filter(proposal=> proposal.events.none(event=> event.proposalName==='Transfer.Proposal'))
-    .map(isCloseToEnding);    
+
+  // TODO NEXT: add helper function for byProposalIndexes() to use, which bundles all events
+  // onto a 'proposal' object, as formatted above (c. L68)
+    .filter(proposal=> proposal.event.none(event=> event.proposalName==='Transfer.Proposal'))
+    .filter(isCloseToEnding);
   // eslint-disable-next-line prefer-spread
   polkassemblyPosts.todo.push.apply( polkassemblyPosts.todo, newCloseToEndingBounties.map(postFromNewProposal) );
 
