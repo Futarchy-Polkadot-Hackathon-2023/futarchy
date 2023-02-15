@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "run": "node src/run.js",
+    "queries": "node src/queries.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "squid": "#TODO: edit - cd subsquid-indexer && sqd up & sqd serve",
     "subsquid-build": "cd subsquid-indexer && rm -rf lib && tsc",
@@ -23,5 +24,10 @@
   "bugs": {
     "url": "https://github.com/PolkaHack/futarchy/issues"
   },
-  "homepage": "https://github.com/PolkaHack/futarchy#readme"
+  "homepage": "https://github.com/PolkaHack/futarchy#readme",
+  "dependencies": {
+    "jwt-decode": "^3.1.2",
+    "node-fetch": "^3.3.0",
+    "util": "^0.12.5"
+  }
 }

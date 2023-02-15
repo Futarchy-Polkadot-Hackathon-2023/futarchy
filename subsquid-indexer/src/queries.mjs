@@ -1,4 +1,3 @@
-import { resolve } from "path"
 
 const exampleEventResponse =  {
   "timestamp": "2022-11-22T11:29:30.016000Z",
