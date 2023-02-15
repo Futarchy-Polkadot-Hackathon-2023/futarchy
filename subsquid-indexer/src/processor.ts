@@ -103,8 +103,6 @@ processor.run(new TypeormDatabase(), async ctx => {
     await ctx.store.insert(bountiesToStore)
 })
 
-
-
 interface TreasuryEvent {
     id: string
     eventName: string

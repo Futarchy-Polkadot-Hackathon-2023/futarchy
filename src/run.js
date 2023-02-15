@@ -1,12 +1,28 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import squidQuery from "./subsquid-indexer/queries";
-import polkassemblyGetQuery from "./polkassemblyClient";
-import ZeitgeistManager from "./ZeitgeistManager";
+// import squidQuery from "./queries.js";
+import squidQuery from "../subsquid-indexer/src/queries.mjs";
+import polkassembly  from "./graphqlClient.js";
+import ZeitgeistManager from "./ZeitgeistManager/index.js";
 // import ksmProvider from "somewhere";
+
+import kProps from "../cache/knownProposals.json" assert { type: "json" };
+const { knownProposals } = kProps;
+const lastKnownKsmBlock = kProps.atBlock
+import markets from "../cache/markets.json" assert { type: "json" };
+import polkassemblyPosts from "../cache/posts.json" assert { type: "json" };
+
+console.log('knownProposals', knownProposals);
+console.log('lastKnownKsmBlock', lastKnownKsmBlock);
+console.log('markets', markets);
+console.log('posts', polkassemblyPosts);
+
+console.log(squidQuery);
+console.log(polkassembly);
+console.log(ZeitgeistManager);
 
 // TODO: add to polkassemblyClient.js
 let polkassemblyClient;
-import web2Creds from  "./secrets/web2Creds";
+import web2Creds from  "../.secrets/web2Creds.js";
 
 // sparse arrays - set by index, access by index, unset with delete keyword
 const emptyMarketsObject = {
@@ -30,15 +46,11 @@ const emptyPolkassemblyPostsObject = {
 //   textVersion
 // };
 
-
-const knownProposals = require("./cache/knownProposals") || {};
-const markets = require("./cache/markets") || emptyMarketsObject;
-const polkassemblyPosts = require("./cache/posts") || emptyPolkassemblyPostsObject;
-const { lastKnownZtgBlock=0 , lastKnownKsmBlock=0 } = require("./cache");
+// const { lastKnownZtgBlock=0 , lastKnownKsmBlock=0 } = require("./cache");
 
 const bootstrap = ()=> new Promise (async (resolve, reject) => {
-  const latestZtgBlock = await zeitgeist.latestBlock();
-  const latestKsmBlock = await provider({ chain: 'ksm' }).latestBlock();
+  // TODO Use provider independent from squid for latestBlock()
+  const latestKsmBlock = await squidQuery.latestBlock();
   const proposalsWithNews= [];
 
   const newProposalEvents = await squidQuery.allProposalEvents({
@@ -208,16 +220,16 @@ setInterval(()=>{
 
 // USAGE example:
 
-const ztgManager = new ZeitgeistManager();
+// const ztgManager = new ZeitgeistManager();
 
-// ztgManager.getAllMarketIds()
-//     .then(console.log)
+// // ztgManager.getAllMarketIds()
+// //     .then(console.log)
+// //     .catch(console.error)
+// //     .finally(() => process.exit());
+
+// ztgManager.createCategoricalMarket()
+//     .then(marketDataIdString => console.log(marketDataIdString))
 //     .catch(console.error)
-//     .finally(() => process.exit());
-
-ztgManager.createCategoricalMarket()
-    .then(marketDataIdString => console.log(marketDataIdString))
-    .catch(console.error)
 
 // zeitgeist.sdk.createMarket resolving successful market creation be like:
 //     if (method == `MarketCreated`) {

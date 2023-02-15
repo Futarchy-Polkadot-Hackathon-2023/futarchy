@@ -2,9 +2,17 @@
   "name": "futarchy",
   "version": "1.0.0",
   "description": "Futarchy, yo!",
-  "main": "index.js",
+  "main": "src/run.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "run": "node src/run.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "squid": "#TODO: edit - cd subsquid-indexer && sqd up & sqd serve",
+    "subsquid-build": "cd subsquid-indexer && rm -rf lib && tsc",
+    "subsquid-update": "cd subsquid-indexer && npx npm-check-updates --filter /subsquid/ --upgrade && npm i -f",
+    "subsquid-db:migrate": "cd subsquid-indexer && npx squid-typeorm-migration apply",
+    "subsquid-processor:start": "cd subsquid-indexer && node lib/processor.js",
+    "subsquid-query-node:start": "cd subsquid-indexer && sqd serve"
   },
   "repository": {
     "type": "git",
