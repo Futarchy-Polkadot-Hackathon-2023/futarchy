@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  db:
+    container_name: subsquid_db
+    image: postgres:15
+    environment:
+      POSTGRES_DB: squid
+      POSTGRES_PASSWORD: squid
+    shm_size: 1gb
+    ports:
+      - "${DB_PORT}:5432"
+      # command: ["postgres", "-c", "log_statement=all"]
+#     volumes:
+#       # !! SET THIS TO YOUR PERSISTENT STORAGE LOCATION!!
+#       - squid-treasury-v2:/fkndocker/volumes/squid-treasury-v2
+# volumes:
+#   squid-treasury-v2:
+
