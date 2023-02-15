@@ -85,9 +85,9 @@ const bootstrap = ()=> new Promise (async (resolve, reject) => {
     })
   });
 
-  const knownBountiesState = await squidQuery.allProposalEvents({
-    bounties: bounties.map(bounty => bounty.number)
-  });
+  // const knownBountiesState = await squidQuery.allProposalEvents({
+  //   bounties: bounties.map(bounty => bounty.number)
+  // });
 
   // Let's work on live markets instead of filtering all events from squid
   // const newCloseToEndingBounties = knownBountiesState
