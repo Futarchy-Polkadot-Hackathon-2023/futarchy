@@ -94,7 +94,6 @@ dist
 
 # not just Gatsby files
 .cache/
-cache/
 
 # Gatsby files
 # .cache/
