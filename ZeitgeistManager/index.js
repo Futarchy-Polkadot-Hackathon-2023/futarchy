@@ -101,12 +101,12 @@ class ZtgManager {
 }
 
 
-const manager = new ZtgManager();
+// const manager = new ZtgManager();
 
 
-manager.getMarketById2(568)
-    .then(console.log)
-    .catch(console.error)
-    .finally(() => process.exit());
+// manager.getMarketById2(568)
+//     .then(console.log)
+//     .catch(console.error)
+//     .finally(() => process.exit());
 
 export default ZtgManager

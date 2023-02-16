@@ -11,7 +11,8 @@ const lastKnownKsmBlock = kProps.atBlock
 import markets from "../cache/markets.json" assert { type: "json" };
 import polkassemblyPosts from "../cache/posts.json" assert { type: "json" };
 
-const zeitgeist = ZeitgeistManager();
+
+// const zeitgeist = ZeitgeistManager();
 
 console.log('knownProposals', knownProposals);
 console.log('lastKnownKsmBlock', lastKnownKsmBlock);
@@ -21,7 +22,7 @@ console.log('posts', polkassemblyPosts);
 console.log(squidQuery);
 console.log(polkassemblyClient);
 console.log(ZeitgeistManager);
-console.log(zeitgeist);
+// console.log(zeitgeist);
 
 import web2Creds from  "../.secrets/web2Creds.js";
 
@@ -131,16 +132,26 @@ const findTriggers = ()=> new Promise (async (resolve, reject) => {
 
 const marketFromNewProposal = proposal=> {
   // convert the subsquid bounty event into data for creation of a zeitgeist market
+  // We need at minimum:
+  // period: [blockStart|timeStart, blockEnd|timeEnd],
+  // question: marketCreationArguments.question,
+  // description: marketCreationArguments.description,
+  // slug: marketCreationArguments.slug,
 
+  const behaviour = behaviourFromProposal(proposal);
+  const { proposalIndex, blockNumber }  = proposal[0];
   // Cannot currently see any use to call this function other than for new proposals
-  if (behaviourFromProposal(proposal) !== 'postNewProposal') 
+  if (behaviour !== 'postNewProposal') 
     return null;
 
   // Convert
   // INPUT: an array of events concerning one proposalIndex, which will not certainly have Proposed as first element
   // into OUTPUT: { description, question, slug, expiry }
-
-  
+    const endBlock = blockNumber + 28.25*3600+1;
+    const selfDescribedTitle = polkassemblyClient.getTitle(proposal[0].proposalIndex);
+    const description = `KSM Treasury proposal # ${} (${}) - will it be Accepted or Rejected? Or not?`;
+    const question = `Will KSM Treasury proposal #${} be Rejected, Accepted, or neither by (KSM) block ${blockNumber}`;
+    const slug = `KSM-treasury-prop-${proposalIndex}`;
 }
 
 const postFromNewProposal = proposal =>{
@@ -189,8 +200,6 @@ const performActions= async toDos=> {
     })
 }
 
-// NB ignore the return values from this function - the passed array is mutated to add the behaviour (at the start)
-// eslint-disable-next-line consistent-return
 const behaviourFromProposal = newProposalEvents=> {
   if (newProposalEvents.length !== 1) {
     const propIndex = newProposalEvents[0].proposalIndex;
