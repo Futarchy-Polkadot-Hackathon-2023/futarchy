@@ -149,15 +149,27 @@ const updateAll= async toDos=> {
   }
   const { proposalsWithNews, newCloseToEndingBounties } = toDos;
   const newProposals = proposalsWithNews
-    .filter(proposal=> proposal.events[0].eventName==='Transfer.Proposed');
-  newProposals.forEach(proposal=> {
-    doCreateMarket(proposal)
-      .then (market=> {
-        const newPost = postFromNewProposal(proposal);
-        polkassemblyPosts.todo.push(newPost);
-        doCreatePost(newPost);
-      });
-  })
+    .filter(proposal=> proposal.events[0].eventName==='Transfer.Proposed')
+    .map(marketFromNewProposal)
+    .forEach(proposal=> {
+      doCreateMarket(proposal)
+        .then(market=> {
+          // assuming market was successfully created..
+          markets.deployed.live.push(market);
+          const newPost = postFromNewProposal(proposal);
+          doCreatePost(newPost)
+            .then()
+            .catch(e=>{
+              console.log(e);
+              polkassemblyPosts.todo.push(newPost); 
+            });
+        })
+        .catch(e=> {
+          console.log(e);
+          markets.todo.push(proposal);
+
+        });
+    })
 }
 
 // NB ignore the return values from this function - the passed array is mutated to add the behaviour (at the start)
