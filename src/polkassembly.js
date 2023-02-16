@@ -20,6 +20,7 @@
 */
 
 import fetch from "node-fetch";
+import commentOnRererendum from "./polkassemblyPost";
 
 /* Mock Data Input */
 const dataInput = {
@@ -74,7 +75,7 @@ class Polkassembly {
 
   /* Post() takes an post_id and a comment. Both strings */
   /* Note: If changing User, authorId has to change probably */
-  async postComment(postId, comment) {
+  async postCommentbyPostId(postId, comment) {
     try {
       if (await this.set_token()) {
         fetch(this.URL, {
@@ -104,6 +105,8 @@ class Polkassembly {
       return false;
     }
   }
+
+  postCommentbyRererendumId = commentOnRererendum
 
   /* Logs out */
   async logout() {

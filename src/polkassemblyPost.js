@@ -1,11 +1,15 @@
 /*
 * USES eg: call commentOnRererendum('92', 'sweet comment') where 92 is the referenda id and it returns true after posting
 */
+
+const USER = "demeg";
+const PASSWORD = "Hello-123";
+
 import webdriver from "selenium-webdriver";
 import chrome from "selenium-webdriver/chrome.js";
 
 
-async function commentOnRererendum(refId, commentText) {
+async function commentOnRererendum(refId, commentText, user=USER, password=PASSWORD ) {
     let URL = "https://kusama.polkassembly.io/referendum/" + refId;
 
     const xpath_login_button = '//*[@id="root"]/section/header/nav/div/div[2]/div[5]/div/a'
@@ -43,8 +47,8 @@ async function commentOnRererendum(refId, commentText) {
         driver.get(URL)
         await driver.findElement(webdriver.By.xpath(xpath_login_button)).click()
         await driver.wait(webdriver.until.elementLocated(webdriver.By.xpath(rheader_xpath)),5*1000);
-        await driver.findElement(webdriver.By.xpath(userid_xpath)).sendKeys("demeg");
-        await driver.findElement(webdriver.By.xpath(password_xpath)).sendKeys("Hello-123")
+        await driver.findElement(webdriver.By.xpath(userid_xpath)).sendKeys(user);
+        await driver.findElement(webdriver.By.xpath(password_xpath)).sendKeys(password)
         await driver.findElement(webdriver.By.xpath(submit_login_xpath)).click()
         await driver.wait(webdriver.until.elementLocated(webdriver.By.xpath(comment_area_xpath)),5*1000);
         await driver.findElement(webdriver.By.xpath(comment_area_xpath)).sendKeys(commentText)
@@ -64,3 +68,5 @@ async function commentOnRererendum(refId, commentText) {
 
 commentOnRererendum('263', 'testing123')
 .then(data => console.log(data))
+
+export default commentOnRererendum
