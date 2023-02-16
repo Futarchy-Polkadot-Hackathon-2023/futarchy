@@ -8,7 +8,7 @@ export class ZtgConfiguration {
     static defaultPoolAmount = ZTG.mul(100).toString();
     static defaultSwapFee = swapFeeFromFloat(1).toString();
     static defaultDurationHours = 24 * 14;
-    static tags = ["Governance", "Crypto", "Kusama", "Polkasembly", "Futurarchy"];
+    static tags = ["Governance", "Crypto", "Kusama", "Polkassembly", "Futarchy"];
 
     static {
         if (process.env.seed == null) {

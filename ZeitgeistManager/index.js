@@ -84,7 +84,7 @@ class ZtgManager {
             },
         };
 
-        console.log(`Attempt to create a market with params: ${JSON.stringify(params)}`)
+        console.log("Attempt to create a market with params:\n", JSON.stringify(params))
 
         const response = await sdk.model.markets.create(params);
         // extracts the market and pool creation events from block
@@ -99,8 +99,27 @@ class ZtgManager {
         console.log(`Market created on ${await this.isMainnet()? "mainnet" : "battery station"} with id: ${market.marketId}. Pool created with id: ${pool.poolId}`);
         console.log(`View new market at ${marketCreationResult.getUrl()}`);
 
+        console.log(marketCreationResult);
+        console.log(marketCreationResult.getMarketId());
+        console.log(`https://test.staging.zeitgeist.pm/markets/${marketCreationResult.getMarketId()}`);
+        console.log(marketCreationResult.getPoolId());
         return marketCreationResult;
     }
 }
+
+const manager = new ZtgManager();
+
+// manager.createMarket({
+//     question: 'Will we complete a project by 12:00CET 17/2/23',
+//     description: 'Will the futarchy team in PolkadotGlobal EU Hack actually get theor bot submitted on time?',
+//     slug: 'will-complete-by-17.2.23',
+//     durationHours : 24
+// })
+
+// manager.getMarketById2(573)
+//     .then(console.log)
+//     .catch(console.error)
+//     .finally(() => process.exit());
+
 
 export default ZtgManager

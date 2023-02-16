@@ -128,8 +128,6 @@ const findTriggers = ()=> new Promise (async (resolve, reject) => {
 
 })
 
-
-
 const marketFromNewProposal = proposal=> {
   // convert the subsquid bounty event into data for creation of a zeitgeist market
   // We need at minimum:
@@ -148,11 +146,32 @@ const marketFromNewProposal = proposal=> {
   // INPUT: an array of events concerning one proposalIndex, which will not certainly have Proposed as first element
   // into OUTPUT: { description, question, slug, expiry }
     const endBlock = blockNumber + 28.25*3600+1;
-    const selfDescribedTitle = polkassemblyClient.getTitle(proposal[0].proposalIndex);
-    const description = `KSM Treasury proposal # ${} (${}) - will it be Accepted or Rejected? Or not?`;
-    const question = `Will KSM Treasury proposal #${} be Rejected, Accepted, or neither by (KSM) block ${blockNumber}`;
+    const selfDescribedTitle = polkassemblyClient.getTitle(proposalIndex);
+    const description = `KSM Treasury proposal # ${proposalIndex} (${selfDescribedTitle}) - will it be Accepted or Rejected? Or not?`;
+    const question = `Will KSM Treasury proposal #${proposalIndex} be Rejected, Accepted, or neither by (KSM) block ${endBlock}`;
     const slug = `KSM-treasury-prop-${proposalIndex}`;
+
+    return { endBlock, selfDescribedTitle, description, question, slug }
 }
+
+const doCreateMarket = proposal=> new Promise((resolve,reject) => {
+
+  try {
+    const marketCreationResult  = ZeitgeistManager.createMarket(marketCreationArguments);
+    if (marketCreationResult.success) {
+      console.log('Successfully created market ',marketCreationResult.getMarketId());
+      return { 
+        marketId : marketCreationResult.getMarketId(),
+        poolId : marketCreationResult.poolId(),
+        link : `https://test.staging.zeitgeist.pm/markets/${marketCreationResult.getMarketId()}`,
+        marketCreationResult
+      };
+    }
+  } catch (e) {
+    throw e
+  }
+
+})
 
 const postFromNewProposal = proposal =>{
   // convert the subsquid bounty event into data for a polkassembly post 
