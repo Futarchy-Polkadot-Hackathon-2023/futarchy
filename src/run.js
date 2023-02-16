@@ -46,7 +46,7 @@ const emptyPolkassemblyPostsObject = {
 
 // const { lastKnownZtgBlock=0 , lastKnownKsmBlock=0 } = require("./cache");
 
-const bootstrap = ()=> new Promise (async (resolve, reject) => {
+const findTriggers = ()=> new Promise (async (resolve, reject) => {
   // TODO Use provider independent from squid for latestBlock()
   const latestKsmBlock = await squidQuery.latestBlock();
   const proposalsWithNews= [];
@@ -58,8 +58,9 @@ const bootstrap = ()=> new Promise (async (resolve, reject) => {
   })
   .then(eventsUnordered=> {
     eventsUnordered
-      .filter(event=> event.ProposalIndex < 2<<20)   // proposalIndex should be < 2<<10 but if not, better miss events than confusing behaviour
-      // TODO: replace with orderBy in query
+      // proposalIndex should be < 2<<10 but if not, better miss events than confusing behaviour
+      .filter(event=> event.ProposalIndex < 2<<20)   
+      // TODO: replace this with orderBy clause in query
       .sort((a, b)=> 
         (a.proposalIndex<<20 + a.blockNumber) - (b.proposalIndex<<20 + b.blockNumber)
       )
@@ -101,8 +102,6 @@ const bootstrap = ()=> new Promise (async (resolve, reject) => {
   // });
 
   // Let's work on live markets instead of filtering all events from squid
-  // const newCloseToEndingBounties = knownBountiesState
-  //   .filter(....
   const newCloseToEndingBounties = (await squidQuery.byProposalIndexes({ 
       proposals: markets.deployed.live
         .filter(market => market.proposalIndex)
@@ -157,7 +156,7 @@ const isCloseToEnding = proposal =>{
 }
     
 // toDos is just an object containing { proposalsWithNews, newCloseToEndingBounties }
-const updateAll= async toDos=> {
+const performActions= async toDos=> {
   if (toDos) {
     if (!polkassemblyClient.isActive())
     await polkassemblyClient.setToken();
@@ -241,12 +240,12 @@ const isKnownProposal = proposalIndex=>
 const hasLiveMarket = proposalIndex=> 
   Boolean(markets.deployed.live[proposalIndex])
 
-bootstrap()
-  .then(updateAll);
+findTriggers()
+  .then(performActions);
 
 setInterval(()=>{
-  bootstrap()
-    .then(updateAll);
+findTriggers()
+  .then(performActions);
 }, 5*60*1000);
 
 
