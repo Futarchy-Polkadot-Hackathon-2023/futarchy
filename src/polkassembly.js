@@ -20,7 +20,7 @@
 */
 
 import fetch from "node-fetch";
-import commentOnRererendum from "./polkassemblyPost";
+import commentOnReferendum from "./polkassemblyPost";
 
 /* Mock Data Input */
 const dataInput = {
@@ -106,9 +106,9 @@ class Polkassembly {
     }
   }
 
-  // currently does NOT accept token for auth
-  // commentOnRererendum(refId, commentText, auth={ user:USER, password: PASSWORD }) 
-  postCommentbyRererendumId = commentOnRererendum
+  // currently does NOT accept token for auth 
+  // commentOnReferendum(refId, commentText, auth={ user:USER, password: PASSWORD }) 
+  postCommentbyReferendumId = commentOnReferendum
 
   /* Logs out */
   async logout() {

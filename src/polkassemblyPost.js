@@ -1,5 +1,5 @@
 /*
-* USES eg: call commentOnRererendum('92', 'sweet comment') where 92 is the referenda id and it returns true after posting
+* USES eg: call commentOnReferendum('92', 'sweet comment') where 92 is the referenda id and it returns true after posting
 */
 
 const USER = "demeg";
@@ -10,7 +10,7 @@ import chrome from "selenium-webdriver/chrome.js";
 
 // post using bearer token currently NOT supported in this function
 // (and postcomment with bearer token requires navigating to extract postId)
-async function commentOnRererendum(refId, commentText, auth={ user:USER, password: PASSWORD }) {
+async function commentOnReferendum(refId, commentText, auth={ user:USER, password: PASSWORD }) {
     let URL = "https://kusama.polkassembly.io/referendum/" + refId;
 
     const xpath_login_button = '//*[@id="root"]/section/header/nav/div/div[2]/div[5]/div/a'
@@ -67,7 +67,7 @@ async function commentOnRererendum(refId, commentText, auth={ user:USER, passwor
     return false
 }
 
-commentOnRererendum('263', 'testing123')
+commentOnReferendum('263', 'testing123')
 .then(data => console.log(data))
 
-export default commentOnRererendum
+export default commentOnReferendum
