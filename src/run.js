@@ -104,13 +104,16 @@ const bootstrap = ()=> new Promise (async (resolve, reject) => {
   // const newCloseToEndingBounties = knownBountiesState
   //   .filter(....
   const newCloseToEndingBounties = (await squidQuery.byProposalIndexes({ 
-      proposals: markets.deployed.live.filter(market => market.proposalIndex)
+      proposals: markets.deployed.live
+        .filter(market => market.proposalIndex)
+        .map(marketId=>marketId)    // TODO - correct for actual type of market[n]
     }))
     // The following can be more detailed filter to distinguish between, eg 'will it become active' and 'will it get paid'
 
   // TODO NEXT: add helper function for byProposalIndexes() to use, which bundles all events
-  // onto a 'proposal' object, as formatted above (c. L68)
-    .filter(proposal=> proposal.event.none(event=> event.eventName==='Transfer.Proposal'))
+  // onto a 'proposal' object
+    // V currently uses made-up data structure - TODO: correct it once createMarket integrated!
+    .filter(proposal=> proposal.events && proposal.events.none(event=> event.eventName==='Transfer.Proposal'))
     .filter(isCloseToEnding);
   // eslint-disable-next-line prefer-spread
   polkassemblyPosts.todo.push.apply( polkassemblyPosts.todo, newCloseToEndingBounties.map(postFromNewProposal) );
@@ -156,8 +159,8 @@ const isCloseToEnding = proposal =>{
 // toDos is just an object containing { proposalsWithNews, newCloseToEndingBounties }
 const updateAll= async toDos=> {
   if (toDos) {
-    if (!polkassemblyClient.active())
-    await polkassemblyClient.login();
+    if (!polkassemblyClient.isActive())
+    await polkassemblyClient.setToken();
   }
   const { proposalsWithNews, newCloseToEndingBounties } = toDos;
   const newProposals = proposalsWithNews
