@@ -51,6 +51,7 @@ class ZtgManager {
         await cryptoWaitReady()
         const keyring = new Keyring({ ss58Format: 73, type: 'sr25519' }) // battery station, zeitgeist testnet format
         const signer = keyring.addFromMnemonic(ZtgConfiguration.signerSeed);
+        console.log(`Signer address to be used for market creation ${signer.address}`)
 
         const durationHours = marketCreationArguments.durationHours ? marketCreationArguments.durationHours : ZtgConfiguration.defaultDurationHours;
 
