@@ -25,19 +25,9 @@ class ZtgManager {
 
     async getMarketById(marketId) {
         const sdk = await this.getSdk();
-        return await sdk.model.markets.get(marketId);
+        return await sdk.model.markets.get({ marketId: marketId });
     }
 
-    async getMarketById2(marketId) {
-        const sdk = await this.getSdk();
-        return await sdk.model.markets.list({
-            limit: 10,
-            where: {
-                status_eq: MarketStatus.Active,
-                marketId: marketId
-            },
-        });
-    }
 
     async listAllMarkets() {
         const sdk = await this.getSdk();
@@ -51,6 +41,7 @@ class ZtgManager {
         await cryptoWaitReady()
         const keyring = new Keyring({ ss58Format: 73, type: 'sr25519' }) // battery station, zeitgeist testnet format
         const signer = keyring.addFromMnemonic(ZtgConfiguration.signerSeed);
+        console.log(`Signer address to be used for market creation ${signer.address}`)
 
         const durationHours = marketCreationArguments.durationHours ? marketCreationArguments.durationHours : ZtgConfiguration.defaultDurationHours;
 
