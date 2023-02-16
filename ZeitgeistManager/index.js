@@ -52,6 +52,7 @@ class ZtgManager {
         const keyring = new Keyring({ ss58Format: 73, type: 'sr25519' }) // battery station, zeitgeist testnet format
         const signer = keyring.addFromMnemonic(ZtgConfiguration.signerSeed);
 
+        const durationHours = marketCreationArguments.durationHours ? marketCreationArguments.durationHours : ZtgConfiguration.defaultDurationHours;
 
         const params = {
             baseAsset: { Ztg: null },
@@ -59,7 +60,7 @@ class ZtgManager {
             disputeMechanism: "Authorized",
             marketType: { Categorical: 2 },
             oracle: signer.address,
-            period: { Timestamp: [Date.now(), Date.now() + 1000 * 60 * 60 * ZtgConfiguration.defaultDurationHours] },
+            period: { Timestamp: [Date.now(), Date.now() + 1000 * 60 * 60 * durationHours] },
             deadlines: {
                 disputeDuration: 5000,
                 gracePeriod: 200,
@@ -83,30 +84,23 @@ class ZtgManager {
             },
         };
 
-        const response = await sdk.model.markets.create(params);
+        console.log(`Attempt to create a market with params: ${JSON.stringify(params)}`)
 
+        const response = await sdk.model.markets.create(params);
         // extracts the market and pool creation events from block
         const { market, pool } = response.saturate().unwrap();
 
-        const marketCreationResult = new MarketCreationResult();
-        marketCreationResult.marketId = market;
-        marketCreationResult.poolId = pool;
+        let marketCreationResult = new MarketCreationResult();
+        marketCreationResult.market = market;
+        marketCreationResult.pool = pool;
         marketCreationResult.success = true;
         marketCreationResult.isMainnet = await this.isMainnet();
 
         console.log(`Market created on ${await this.isMainnet()? "mainnet" : "battery station"} with id: ${market.marketId}. Pool created with id: ${pool.poolId}`);
+        console.log(`View new market at ${marketCreationResult.getUrl()}`);
 
         return marketCreationResult;
     }
 }
-
-
-// const manager = new ZtgManager();
-
-
-// manager.getMarketById2(568)
-//     .then(console.log)
-//     .catch(console.error)
-//     .finally(() => process.exit());
 
 export default ZtgManager
