@@ -68,33 +68,34 @@ const bootstrap = ()=> new Promise (async (resolve, reject) => {
       .forEach(event=> {
         proposalsWithNews[event.proposalIndex] = proposalsWithNews[event.proposalIndex] || [];
         proposalsWithNews[event.proposalIndex].push(event);      
-    })
-    proposalsWithNews.forEach(addProposalBehaviour);
-    // this could better have been a .map
-    // don't change it until working and then you can test it! ;)
-    proposalsWithNews.forEach(proposal=> {
-      const behaviour = proposal[0];     //because that's how proposal array was mutated
-      switch (behaviour) {
-        case 'postNewProposal': {
-          markets.todo.push( {
-            proposalIndex: proposal[1].proposalIndex,
-            events: proposal.slice(1)
-          })
-          break;
+    })   
+
+    // map over sparse array proposalsWithNews. Array methods only operate on populated elements.
+    proposalsWithNews
+      .map(behaviourFromProposal)
+      .forEach((behaviour, idx)=> {
+        const proposal = proposalsWithNews[idx]
+        switch (behaviour) {
+          case 'postNewProposal': {
+            markets.todo.push( {
+              proposalIndex: proposal[0].proposalIndex,
+              events: proposal
+            })
+            break;
+          }
+          case 'postWeHaveWinner': {
+            polkassemblyPosts.todo.push( {
+              proposalIndex: proposal[0].proposalIndex,
+              events: proposal.filter(event=> 
+                ['Treasury.Proposed', 'Treasury.Awarded', 'Treasury.Rejected', 'Treasury.SpendApproved']
+                  .includes(event.eventName)
+              )            
+            })
+            break;
+          }
+          default: break;
         }
-        case 'postWeHaveWinner': {
-          polkassemblyPosts.todo.push( {
-            proposalIndex: proposal[1].proposalIndex,
-            events: proposal.filter( proposal=> 
-              ['Treasury.Proposed', 'Treasury.Awarded', 'Treasury.Rejected', 'Treasury.SpendApproved']
-                .includes(proposal.proposalName)
-            )            
-          })
-          break;
-        }
-        default: break;
-      }
-    })
+      })
   });
 
   // const knownBountiesState = await squidQuery.allProposalEvents({
@@ -111,7 +112,7 @@ const bootstrap = ()=> new Promise (async (resolve, reject) => {
 
   // TODO NEXT: add helper function for byProposalIndexes() to use, which bundles all events
   // onto a 'proposal' object, as formatted above (c. L68)
-    .filter(proposal=> proposal.event.none(event=> event.proposalName==='Transfer.Proposal'))
+    .filter(proposal=> proposal.event.none(event=> event.eventName==='Transfer.Proposal'))
     .filter(isCloseToEnding);
   // eslint-disable-next-line prefer-spread
   polkassemblyPosts.todo.push.apply( polkassemblyPosts.todo, newCloseToEndingBounties.map(postFromNewProposal) );
@@ -140,6 +141,7 @@ const isCloseToEnding = proposal =>{
   // quick and dirty version - check if <36 hours before end of treshold period
 }
     
+// toDos is just an object containing { proposalsWithNews, newCloseToEndingBounties }
 const updateAll= async toDos=> {
   if (toDos) {
     if (!polkassemblyClient.active())
@@ -147,8 +149,8 @@ const updateAll= async toDos=> {
   }
   const { proposalsWithNews, newCloseToEndingBounties } = toDos;
   const newProposals = proposalsWithNews
-    .filter(proposal=> proposal.events[0].proposalName==='Transfer.Proposed');
-    newProposals.forEach(proposal=> {
+    .filter(proposal=> proposal.events[0].eventName==='Transfer.Proposed');
+  newProposals.forEach(proposal=> {
     doCreateMarket(proposal)
       .then (market=> {
         const newPost = postFromNewProposal(proposal);
@@ -160,46 +162,46 @@ const updateAll= async toDos=> {
 
 // NB ignore the return values from this function - the passed array is mutated to add the behaviour (at the start)
 // eslint-disable-next-line consistent-return
-const addProposalBehaviour = newProposalEvents=> {
+const behaviourFromProposal = newProposalEvents=> {
   if (newProposalEvents.length !== 1) {
     const propIndex = newProposalEvents[0].proposalIndex;
-    switch (newProposalEvents[0].proposalName) {
+    switch (newProposalEvents[0].eventName) {
       case 'Treasury.Proposed': 
-        return newProposalEvents.unshift('postNewProposal')
+        return 'postNewProposal'
       case 'Treasury.Awarded': {
         if (isKnownProposal(propIndex))
           if (markets.deployed.live[propIndex]) 
-            return newProposalEvents.unshift('postWeHaveWinner')
+            return 'postWeHaveWinner'
         break;
       }
       case 'Treasury.Rejected': {
         if (isKnownProposal(propIndex))
           if (markets.deployed.live[propIndex]) 
-            return newProposalEvents.unshift('postWeHaveWinner')
+            return 'postWeHaveWinner'
         break;
       }
       case 'Treasury.SpendApproved': {
         if (isKnownProposal(propIndex))
           if (markets.deployed.live[propIndex]) 
-            return newProposalEvents.unshift('postWeHaveWinner')
+            return 'postWeHaveWinner'
         break;
       }
-      default: return
+      default: return null
     }
   }
   
   // newProposalEvents.length !== 1, therefore should be >1
-  if (newProposalEvents[0].proposalName === 'Treasury.Proposed') {
+  if (newProposalEvents[0].eventName === 'Treasury.Proposed') {
     if (newProposalEvents.some(event=>
       ['Treasury.Awarded', 'Treasury.Rejected', 'Treasury.SpendApproved']
-      .includes(event.proposalName))) { 
+      .includes(event.eventName))) { 
         // We missed it.
         // Posting a message without further research risks being spammy, so let's do nothing.
-        return
+        return null
       }
     // In this version, there's nothing interesting more to do with the history of the proposal's events.
     // Show's over, nothing to see..
-    return
+    return null
   }
 
   // Other behaviour to define for other events...
