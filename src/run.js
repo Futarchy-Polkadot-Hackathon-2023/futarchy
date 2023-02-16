@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 // import squidQuery from "./queries.js";
 import squidQuery from "../subsquid-indexer/src/queries.mjs";
-import polkassembly  from "./graphqlClient.js";
+import { polkassemblyClient }  from "./graphqlClient.js";
 import ZeitgeistManager from "./ZeitgeistManager/index.js";
 // import ksmProvider from "somewhere";
 
@@ -17,11 +17,9 @@ console.log('markets', markets);
 console.log('posts', polkassemblyPosts);
 
 console.log(squidQuery);
-console.log(polkassembly);
+console.log(polkassemblyClient);
 console.log(ZeitgeistManager);
 
-// TODO: add to polkassemblyClient.js
-let polkassemblyClient;
 import web2Creds from  "../.secrets/web2Creds.js";
 
 // sparse arrays - set by index, access by index, unset with delete keyword

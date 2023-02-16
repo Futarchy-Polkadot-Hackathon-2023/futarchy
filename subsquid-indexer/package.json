@@ -2,7 +2,7 @@
   "name": "kusama-transfers",
   "private": true,
   "engines" : { 
-    "node" : ">=16"
+    "node" : ">=18"
   },
   "scripts": {
     "build": "rm -rf lib && tsc",
