@@ -2,7 +2,7 @@
 // import squidQuery from "./queries.js";
 import squidQuery from "../subsquid-indexer/src/queries.mjs";
 import { polkassemblyClient }  from "./graphqlClient.js";
-import ZeitgeistManager from "./ZeitgeistManager/index.js";
+import ZeitgeistManager from "../ZeitgeistManager/index.js";
 // import ksmProvider from "somewhere";
 
 import kProps from "../cache/knownProposals.json" assert { type: "json" };
@@ -10,6 +10,8 @@ const { knownProposals } = kProps;
 const lastKnownKsmBlock = kProps.atBlock
 import markets from "../cache/markets.json" assert { type: "json" };
 import polkassemblyPosts from "../cache/posts.json" assert { type: "json" };
+
+const zeitgeist = ZeitgeistManager();
 
 console.log('knownProposals', knownProposals);
 console.log('lastKnownKsmBlock', lastKnownKsmBlock);
@@ -19,6 +21,7 @@ console.log('posts', polkassemblyPosts);
 console.log(squidQuery);
 console.log(polkassemblyClient);
 console.log(ZeitgeistManager);
+console.log(zeitgeist);
 
 import web2Creds from  "../.secrets/web2Creds.js";
 
@@ -249,7 +252,7 @@ findTriggers()
 }, 5*60*1000);
 
 
-// USAGE example:
+// USAGE example (OLD ZeitgeistManager)
 
 // const ztgManager = new ZeitgeistManager();
 
