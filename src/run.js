@@ -2,7 +2,7 @@
 // import squidQuery from "./queries.js";
 import squidQuery from "../subsquid-indexer/src/queries.mjs";
 import { polkassemblyClient }  from "./graphqlClient.js";
-import ZeitgeistManager from "./ZeitgeistManager/index.js";
+import ZeitgeistManager from "../ZeitgeistManager/index.js";
 // import ksmProvider from "somewhere";
 
 import kProps from "../cache/knownProposals.json" assert { type: "json" };
@@ -10,6 +10,9 @@ const { knownProposals } = kProps;
 const lastKnownKsmBlock = kProps.atBlock
 import markets from "../cache/markets.json" assert { type: "json" };
 import polkassemblyPosts from "../cache/posts.json" assert { type: "json" };
+
+
+// const zeitgeist = ZeitgeistManager();
 
 console.log('knownProposals', knownProposals);
 console.log('lastKnownKsmBlock', lastKnownKsmBlock);
@@ -19,6 +22,7 @@ console.log('posts', polkassemblyPosts);
 console.log(squidQuery);
 console.log(polkassemblyClient);
 console.log(ZeitgeistManager);
+// console.log(zeitgeist);
 
 import web2Creds from  "../.secrets/web2Creds.js";
 
@@ -46,7 +50,7 @@ const emptyPolkassemblyPostsObject = {
 
 // const { lastKnownZtgBlock=0 , lastKnownKsmBlock=0 } = require("./cache");
 
-const bootstrap = ()=> new Promise (async (resolve, reject) => {
+const findTriggers = ()=> new Promise (async (resolve, reject) => {
   // TODO Use provider independent from squid for latestBlock()
   const latestKsmBlock = await squidQuery.latestBlock();
   const proposalsWithNews= [];
@@ -58,8 +62,9 @@ const bootstrap = ()=> new Promise (async (resolve, reject) => {
   })
   .then(eventsUnordered=> {
     eventsUnordered
-      .filter(event=> event.ProposalIndex < 2<<20)   // proposalIndex should be < 2<<10 but if not, better miss events than confusing behaviour
-      // TODO: replace with orderBy in query
+      // proposalIndex should be < 2<<10 but if not, better miss events than confusing behaviour
+      .filter(event=> event.ProposalIndex < 2<<20)   
+      // TODO: replace this with orderBy clause in query
       .sort((a, b)=> 
         (a.proposalIndex<<20 + a.blockNumber) - (b.proposalIndex<<20 + b.blockNumber)
       )
@@ -101,8 +106,6 @@ const bootstrap = ()=> new Promise (async (resolve, reject) => {
   // });
 
   // Let's work on live markets instead of filtering all events from squid
-  // const newCloseToEndingBounties = knownBountiesState
-  //   .filter(....
   const newCloseToEndingBounties = (await squidQuery.byProposalIndexes({ 
       proposals: markets.deployed.live
         .filter(market => market.proposalIndex)
@@ -125,21 +128,50 @@ const bootstrap = ()=> new Promise (async (resolve, reject) => {
 
 })
 
-
-
 const marketFromNewProposal = proposal=> {
   // convert the subsquid bounty event into data for creation of a zeitgeist market
+  // We need at minimum:
+  // period: [blockStart|timeStart, blockEnd|timeEnd],
+  // question: marketCreationArguments.question,
+  // description: marketCreationArguments.description,
+  // slug: marketCreationArguments.slug,
 
+  const behaviour = behaviourFromProposal(proposal);
+  const { proposalIndex, blockNumber }  = proposal[0];
   // Cannot currently see any use to call this function other than for new proposals
-  if (behaviourFromProposal(proposal) !== 'postNewProposal') 
+  if (behaviour !== 'postNewProposal') 
     return null;
 
   // Convert
   // INPUT: an array of events concerning one proposalIndex, which will not certainly have Proposed as first element
   // into OUTPUT: { description, question, slug, expiry }
+    const endBlock = blockNumber + 28.25*3600+1;
+    const selfDescribedTitle = polkassemblyClient.getTitle(proposalIndex);
+    const description = `KSM Treasury proposal # ${proposalIndex} (${selfDescribedTitle}) - will it be Accepted or Rejected? Or not?`;
+    const question = `Will KSM Treasury proposal #${proposalIndex} be Rejected, Accepted, or neither by (KSM) block ${endBlock}`;
+    const slug = `KSM-treasury-prop-${proposalIndex}`;
 
-  
+    return { endBlock, selfDescribedTitle, description, question, slug }
 }
+
+const doCreateMarket = proposal=> new Promise((resolve,reject) => {
+
+  try {
+    const marketCreationResult  = ZeitgeistManager.createMarket(marketCreationArguments);
+    if (marketCreationResult.success) {
+      console.log('Successfully created market ',marketCreationResult.getMarketId());
+      return { 
+        marketId : marketCreationResult.getMarketId(),
+        poolId : marketCreationResult.poolId(),
+        link : `https://test.staging.zeitgeist.pm/markets/${marketCreationResult.getMarketId()}`,
+        marketCreationResult
+      };
+    }
+  } catch (e) {
+    throw e
+  }
+
+})
 
 const postFromNewProposal = proposal =>{
   // convert the subsquid bounty event into data for a polkassembly post 
@@ -157,7 +189,7 @@ const isCloseToEnding = proposal =>{
 }
     
 // toDos is just an object containing { proposalsWithNews, newCloseToEndingBounties }
-const updateAll= async toDos=> {
+const performActions= async toDos=> {
   if (toDos) {
     if (!polkassemblyClient.isActive())
     await polkassemblyClient.setToken();
@@ -187,8 +219,6 @@ const updateAll= async toDos=> {
     })
 }
 
-// NB ignore the return values from this function - the passed array is mutated to add the behaviour (at the start)
-// eslint-disable-next-line consistent-return
 const behaviourFromProposal = newProposalEvents=> {
   if (newProposalEvents.length !== 1) {
     const propIndex = newProposalEvents[0].proposalIndex;
@@ -241,16 +271,16 @@ const isKnownProposal = proposalIndex=>
 const hasLiveMarket = proposalIndex=> 
   Boolean(markets.deployed.live[proposalIndex])
 
-bootstrap()
-  .then(updateAll);
+findTriggers()
+  .then(performActions);
 
 setInterval(()=>{
-  bootstrap()
-    .then(updateAll);
+findTriggers()
+  .then(performActions);
 }, 5*60*1000);
 
 
-// USAGE example:
+// USAGE example (OLD ZeitgeistManager)
 
 // const ztgManager = new ZeitgeistManager();
 

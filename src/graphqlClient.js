@@ -7,7 +7,7 @@ import util from "util";
 
 const polkassemblyClient = new Polkassembly();
 polkassemblyClient.setToken()
-  .then(console.log);
+  .then(console.log(polkassemblyClient));
 
 polkassemblyClient.isActive = ()=> { 
   if (polkassemblyClient.token) {
@@ -22,6 +22,7 @@ polkassemblyClient.isActive = ()=> {
     return false;
   
   throw new Error("Unexpected state in polkassemblyClient - no token");
+  
 }
 
 const zeitgeist = {
