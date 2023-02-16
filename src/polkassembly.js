@@ -106,6 +106,8 @@ class Polkassembly {
     }
   }
 
+  // currently does NOT accept token for auth
+  // commentOnRererendum(refId, commentText, auth={ user:USER, password: PASSWORD }) 
   postCommentbyRererendumId = commentOnRererendum
 
   /* Logs out */

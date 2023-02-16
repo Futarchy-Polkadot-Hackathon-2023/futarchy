@@ -8,8 +8,9 @@ const PASSWORD = "Hello-123";
 import webdriver from "selenium-webdriver";
 import chrome from "selenium-webdriver/chrome.js";
 
-
-async function commentOnRererendum(refId, commentText, user=USER, password=PASSWORD ) {
+// post using bearer token currently NOT supported in this function
+// (and postcomment with bearer token requires navigating to extract postId)
+async function commentOnRererendum(refId, commentText, auth={ user:USER, password: PASSWORD }) {
     let URL = "https://kusama.polkassembly.io/referendum/" + refId;
 
     const xpath_login_button = '//*[@id="root"]/section/header/nav/div/div[2]/div[5]/div/a'
@@ -47,8 +48,8 @@ async function commentOnRererendum(refId, commentText, user=USER, password=PASSW
         driver.get(URL)
         await driver.findElement(webdriver.By.xpath(xpath_login_button)).click()
         await driver.wait(webdriver.until.elementLocated(webdriver.By.xpath(rheader_xpath)),5*1000);
-        await driver.findElement(webdriver.By.xpath(userid_xpath)).sendKeys(user);
-        await driver.findElement(webdriver.By.xpath(password_xpath)).sendKeys(password)
+        await driver.findElement(webdriver.By.xpath(userid_xpath)).sendKeys(auth.user);
+        await driver.findElement(webdriver.By.xpath(password_xpath)).sendKeys(auth.password)
         await driver.findElement(webdriver.By.xpath(submit_login_xpath)).click()
         await driver.wait(webdriver.until.elementLocated(webdriver.By.xpath(comment_area_xpath)),5*1000);
         await driver.findElement(webdriver.By.xpath(comment_area_xpath)).sendKeys(commentText)
