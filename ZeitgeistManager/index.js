@@ -25,19 +25,9 @@ class ZtgManager {
 
     async getMarketById(marketId) {
         const sdk = await this.getSdk();
-        return await sdk.model.markets.get(marketId);
+        return await sdk.model.markets.get({ marketId: marketId });
     }
 
-    async getMarketById2(marketId) {
-        const sdk = await this.getSdk();
-        return await sdk.model.markets.list({
-            limit: 10,
-            where: {
-                status_eq: MarketStatus.Active,
-                marketId: marketId
-            },
-        });
-    }
 
     async listAllMarkets() {
         const sdk = await this.getSdk();
