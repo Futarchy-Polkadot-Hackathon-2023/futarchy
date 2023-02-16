@@ -126,12 +126,26 @@ const bootstrap = ()=> new Promise (async (resolve, reject) => {
 
 
 
-const marketFromNewProposal = proposal =>{
+const marketFromNewProposal = proposal=> {
   // convert the subsquid bounty event into data for creation of a zeitgeist market
+
+  // Cannot currently see any use to call this function other than for new proposals
+  if (behaviourFromProposal(proposal) !== 'postNewProposal') 
+    return null;
+
+  // Convert
+  // INPUT: an array of events concerning one proposalIndex, which will not certainly have Proposed as first element
+  // into OUTPUT: { description, question, slug, expiry }
+
+  
 }
 
 const postFromNewProposal = proposal =>{
   // convert the subsquid bounty event into data for a polkassembly post 
+  // INPUT: an array of events concerning one proposalIndex, which will not certainly have Proposed as first element
+  // currently this function is only called for new proposal
+  // - but maybe used in future to also accept update posts (array including synthetic events?)
+  // OUTPUT: single text string including links, suitable for interpolation into graphQL query
 }
 
 const isCloseToEnding = proposal =>{
