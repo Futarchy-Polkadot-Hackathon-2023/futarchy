@@ -48,7 +48,7 @@ chromeOptions.addArguments("--enable-precise-memory-info");
 chromeOptions.addArguments("--disable-popup-blocking");
 chromeOptions.addArguments("--disable-default-apps");
 chromeOptions.addArguments("--disable-infobars");
-
+chromeOptions.addArguments('--headless');
 
 /* Main function Declartion */
 class Polkassembly {
@@ -157,7 +157,7 @@ class Polkassembly {
           .setChromeOptions(chromeOptions)
           .build();
       } catch (error) {
-          
+          //
       }
 
       try {
@@ -166,11 +166,11 @@ class Polkassembly {
           let titleText = await driver.findElement(webdriver.By.xpath(titleXpath)).getText();
           titleText = titleText.split(' ').slice(1).join(' ') || null
 
-          await driver.close()
-          return titleText
-
-      }catch (error) {
-          console.log(error)
+          await driver.close();
+          return titleText;
+      } catch (error) {
+          // comment out the try..catch to preserve the error and retyr after timeout
+          console.log(error);
       }
 
       await driver.close()

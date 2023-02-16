@@ -5,11 +5,14 @@ import { polkassemblyClient }  from "./graphqlClient.js";
 import ZeitgeistManager from "../ZeitgeistManager/index.js";
 // import ksmProvider from "somewhere";
 
+import { error } from "selenium-webdriver";
+
 import kProps from "../cache/knownProposals.json" assert { type: "json" };
 const { knownProposals } = kProps;
 const lastKnownKsmBlock = kProps.atBlock
 import markets from "../cache/markets.json" assert { type: "json" };
 import polkassemblyPosts from "../cache/posts.json" assert { type: "json" };
+import postContents from "../content/postContents.json" assert { type: "json" };
 
 
 // const zeitgeist = ZeitgeistManager();
@@ -25,6 +28,7 @@ console.log(ZeitgeistManager);
 // console.log(zeitgeist);
 
 import web2Creds from  "../.secrets/web2Creds.js";
+import { resolve } from "path";
 
 // sparse arrays - set by index, access by index, unset with delete keyword
 const emptyMarketsObject = {
@@ -128,7 +132,7 @@ const findTriggers = ()=> new Promise (async (resolve, reject) => {
 
 })
 
-const marketFromNewProposal = proposal=> {
+const marketFromNewProposal = async proposal=> {
   // convert the subsquid bounty event into data for creation of a zeitgeist market
   // We need at minimum:
   // period: [blockStart|timeStart, blockEnd|timeEnd],
@@ -145,13 +149,23 @@ const marketFromNewProposal = proposal=> {
   // Convert
   // INPUT: an array of events concerning one proposalIndex, which will not certainly have Proposed as first element
   // into OUTPUT: { description, question, slug, expiry }
-    const endBlock = blockNumber + 28.25*3600+1;
-    const selfDescribedTitle = polkassemblyClient.getTitle(proposalIndex);
-    const description = `KSM Treasury proposal # ${proposalIndex} (${selfDescribedTitle}) - will it be Accepted or Rejected? Or not?`;
-    const question = `Will KSM Treasury proposal #${proposalIndex} be Rejected, Accepted, or neither by (KSM) block ${endBlock}`;
-    const slug = `KSM-treasury-prop-${proposalIndex}`;
 
-    return { endBlock, selfDescribedTitle, description, question, slug }
+  const selfDescribedTitle =  
+    polkassemblyClient.getTitle(proposalIndex)
+      .then(title =>{
+        console.log({proposalIndex, title});
+        return title;
+      })
+    
+  const endBlock = blockNumber + 28.25*3600+1;
+  const description = selfDescribedTitle
+    .then(title=>
+      `KSM Treasury proposal # ${proposalIndex} (${selfDescribedTitle}) - will it be Accepted or Rejected? Or not?` );
+  const question = `Will KSM Treasury proposal #${proposalIndex} be Rejected, Accepted, or neither by (KSM) block ${endBlock}`;
+  const slug = `KSM-treasury-prop-${proposalIndex}`;
+  
+  // await description;
+  return { endBlock, selfDescribedTitle, description, question, slug }
 }
 
 const doCreateMarket = proposal=> new Promise((resolve,reject) => {
@@ -173,12 +187,29 @@ const doCreateMarket = proposal=> new Promise((resolve,reject) => {
 
 })
 
+const doCreatePost = proposal=> new Promise((resolve,reject) => {
+
+
+})
+
 const postFromNewProposal = proposal =>{
   // convert the subsquid bounty event into data for a polkassembly post 
   // INPUT: an array of events concerning one proposalIndex, which will not certainly have Proposed as first element
   // currently this function is only called for new proposal
   // - but maybe used in future to also accept update posts (array including synthetic events?)
   // OUTPUT: single text string including links, suitable for interpolation into graphQL query
+  const { proposalIndex } = proposal[0];
+  if (!hasLiveMarket(proposalIndex))
+    throw new Error('attempted to create post but market is not live');
+
+  return `Most KSM treasury proposals pass on a tiny minority of KSM holders voting, which means little or no quality control on the\n`
+  `proposals that make it through.\n`+
+  `But we don't believe in crying over spilt KSM.\n`+
+  `If you think this proposal should - or shouldn't - pass, then stake some ZTG on the outcome and start convincing people\n`+
+  `The Futarchy bot has created a market at ${markets.deployed.live.link} \n`+
+  `\n`+
+  postContents[Math.floor(Math.random()*postContents.length)]+
+  `\n`  
 }
 
 const isCloseToEnding = proposal =>{
@@ -198,7 +229,16 @@ const performActions= async toDos=> {
   const newProposals = proposalsWithNews
     .filter(proposal=> proposal.events[0].eventName==='Transfer.Proposed')
     .map(marketFromNewProposal)
-    .forEach(proposal=> {
+    .forEach(async proposal=> {
+      // proposal.description is a Promise resolving to string
+      // use it with catch and recursive (?) timeout Promise logic to retry if (Timeout) error thrown
+      // console.log(`Waiting (5000ms) for polkassembly page for referendum ${proposalIndex}`);
+      // console.log('Setting a timeout to try again');
+      // // No-one's gonna tell me not to set object properties on an array :P
+      // proposal.timeout = (proposal.timeout || 15000) * 2;
+      // // TODO: but probably should set an upper limit on that timeout ;
+      
+      await proposal.description;
       doCreateMarket(proposal)
         .then(market=> {
           // assuming market was successfully created..
@@ -266,10 +306,18 @@ const behaviourFromProposal = newProposalEvents=> {
 
 
 const isKnownProposal = proposalIndex=> 
-  Boolean(knownProposals[proposalIndex])
+  Boolean(knownProposals[proposalIndex]);
 
 const hasLiveMarket = proposalIndex=> 
-  Boolean(markets.deployed.live[proposalIndex])
+  Boolean(markets.deployed.live[proposalIndex]);
+ 
+[263,264,290,92]
+  .forEach(id=>{
+    polkassemblyClient.get.title(id)
+      .then(title=> {console.log({id, title});})
+
+  })
+
 
 findTriggers()
   .then(performActions);
