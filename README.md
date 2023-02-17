@@ -8,7 +8,7 @@
 
 <h3 align="center">Futurachy - Main</h3>
   <p align="center">
-    <a href="https://github.com/polkahack/futarchy">Futurachy</a>Futarchy - we're incentivising altruistic governance!</a>
+    We're incentivising altruistic governance!
     <br />
     <a href="https://github.com/PolkaHack/Things" name="demo">Quickstart</a>
     ·
@@ -78,11 +78,12 @@ Futarchy - we're incentivising altruistic governance!
 
 ### Quickstart
 
+Quickstart is a simplistic version of Project Futurachy.
+
 Go to to our Quickstart Repo. RIGHT NOW : )
 
-[QUICKSTART](https://github.com/PolkaHack/Things)
+[Quickstart](https://github.com/PolkaHack/Things)
 
-Quickstart is a simplistic version of Project Futurachy.
 
 ### Usage
 
@@ -125,8 +126,6 @@ K Gunjan - gunjan.cn@gmail.com - [LinkedIn](https://in.linkedin.com/in/gunjan321
 Frank Bevr - frank_dierolf@web.de - Discord: `FrankBevr#9593`  
 Morkeltry - @morkeltry - He will find you
 
-Project Link: [Futurachy](https://github.com/polkahack/futarchy)
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Acknowledgments
@@ -136,7 +135,6 @@ Project Link: [Futurachy](https://github.com/polkahack/futarchy)
 - [Robert Hanson](https://mason.gmu.edu/~rhanson/futarchy.html)
 - [Xylodrone]()
 - [Bobit]()
-- [Zeitgeist SDK](https://github.com/zeitgeistpm/tools)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
