@@ -53,13 +53,14 @@ Futarchy - we're incentivising altruistic governance!
 
 #### Summary
 
+1- been proposed, or, 2-  awarded, rejected or approved for spending:
+
 1. It spins up a Indexer, which graps Data from the from Kusama Chain.
 2. It creates a graphQL endpoint.
 3. It fetches extra data from polkassembly based on the graphQL data.
-4. It creates markets based on 3 cases.
-   - Case 1: If no market exist
-   - Case 2: If new proposal appears
-   - Case 3: If proposal gets updated.
+4. It creates and updates markets based on 2 cases.
+   - Case 1: been proposed, alias exists
+   - Case 2: awarded, rejected or approved, alias updated
 5. It creates a Link to the new market.
 6. It posts a comment in [polkassembly](https://polkadot.polkassembly.io/) with a link to the created Market.
 7. It keeps running.
