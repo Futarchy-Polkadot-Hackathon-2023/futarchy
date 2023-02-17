@@ -163,6 +163,7 @@ const marketFromNewProposal = async proposal=> {
   const question = `Will KSM Treasury proposal #${proposalIndex} be Rejected, Accepted, or neither by (KSM) block ${endBlock}`;
   const slug = `KSM-treasury-prop-${proposalIndex}`;
   
+  // We are currently await-ing description right before createMarket, so no need to here (but here is where you woul duncomment for testing)
   // await description;
   return { proposalIndex, endBlock, selfDescribedTitle, description, question, slug }
 }
