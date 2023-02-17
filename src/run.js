@@ -323,8 +323,8 @@ findTriggers()
   .then(performActions);
 
 setInterval(()=>{
-findTriggers()
-  .then(performActions);
+  findTriggers()
+    .then(performActions);
 }, 5*60*1000);
 
 
