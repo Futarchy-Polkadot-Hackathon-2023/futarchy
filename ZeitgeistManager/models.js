@@ -24,7 +24,11 @@ export class MarketCreationResult {
 export class MarketCreationArguments {
     polkassemblyTreasuryId;
     polkassemblyProposalDescription;
-    durationHours; // optional
+
+    // an object E.g. Optional, default to duration 14 days
+    // marketCompletionStrategy = {strategy : "duration", durationHours: 5}
+    // marketCompletionStrategy = {strategy : "endBlock", startBlock: 2921441, endBlock: 2923000}
+    marketCompletionStrategy;
 
     getPolkasemblyTreasuryUrl() {
         return `https://polkadot.polkassembly.io/treasury/${this.polkassemblyTreasuryId}`;

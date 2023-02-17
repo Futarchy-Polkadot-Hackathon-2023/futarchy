@@ -59,7 +59,37 @@ export default class ZeitgeistManager {
         const signer = await this.getSigner()
         console.log(`Signer address to be used for market creation ${signer.address}`)
 
-        const durationHours = marketCreationArguments.durationHours ? marketCreationArguments.durationHours : ZtgConfiguration.defaultDurationHours;
+        let period = null;
+        if (marketCreationArguments.marketCompletionStrategy) {
+            switch (marketCreationArguments.marketCompletionStrategy.strategy) {
+                case "duration":
+                    period = {
+                        Timestamp: [
+                            Date.now(),
+                            Date.now() + 1000 * 60 * 60 * marketCreationArguments.marketCompletionStrategy.durationHours
+                        ]
+                    }
+                    break;
+                case "endBlock":
+                    period = {
+                        block: [
+                            marketCreationArguments.marketCompletionStrategy.startBlock,
+                            marketCreationArguments.marketCompletionStrategy.endBlock
+                        ]
+                    }
+                    break;
+                default:
+                    throw Error(`marketCompletionStrategy not known: ${marketCreationArguments.marketCompletionStrategy}`)
+            }
+        } else {
+            period = {
+                Timestamp: [
+                    Date.now(),
+                    Date.now() + 1000 * 60 * 60 * ZtgConfiguration.defaultDurationHours
+                ]
+            }
+        }
+
 
         const params = {
             baseAsset: { Ztg: null },
@@ -67,7 +97,7 @@ export default class ZeitgeistManager {
             disputeMechanism: "Authorized",
             marketType: { Categorical: 2 },
             oracle: signer.address,
-            period: { Timestamp: [Date.now(), Date.now() + 1000 * 60 * 60 * durationHours] },
+            period: period,
             deadlines: {
                 disputeDuration: 5000,
                 gracePeriod: 200,
