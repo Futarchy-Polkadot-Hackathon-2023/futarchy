@@ -138,6 +138,8 @@ const marketFromNewProposal = async proposal=> {
   // question: marketCreationArguments.question,
   // description: marketCreationArguments.description,
   // slug: marketCreationArguments.slug,
+  // and for the polkassembly post,
+  // proposalIndex : proposalIndex
 
   const behaviour = behaviourFromProposal(proposal);
   const { proposalIndex, blockNumber }  = proposal[0];
