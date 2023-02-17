@@ -27,24 +27,23 @@ const squidQuery = {
   async latestBlock () {
     const query = "{\"query\":\"query MyQuery {\\n  proposals(orderBy: blockNumber_DESC, limit: 1) {\\n    blockNumber\\n  }\\n}\",\"variables\":null,\"operationName\":\"MyQuery\"}";
     const response = await fetchQuery(query);
-    return await response.json();
+    return (await response.json()).data.proposals[0].blockNumber;
   },
   async allProposalEvents () {
     const query = "{\"query\":\"query MyQuery {\\n  proposals {\\n    proposalIndex\\n    eventName\\n    blockNumber\\n    timestamp\\n    extrinsicId\\n  }\\n}\",\"variables\":null,\"operationName\":\"MyQuery\"}";
     const response = await fetchQuery(query);
-    return await response.json();
+    return (await response.json()).data.proposals;
   },
   async byProposalIndexes(index) {
     const query = `{\"query\":\"query MyQuery {\\n  proposals(where: {proposalIndex_eq: ${index}}) {\\n    proposalIndex\\n    eventName\\n    blockNumber\\n    timestamp\\n    extrinsicId\\n  }\\n}\",\"variables\":null,\"operationName\":\"MyQuery\"}`;
     const response = await fetchQuery(query);
-    return await response.json();
+    return (await response.json()).data.proposals;
   },
   async allProposalEventsGteBlockNumber(blockNumber) {
     const query =  `{\"query\":\"query MyQuery {\\n  proposals(where: {blockNumber_gte: ${blockNumber}}) {\\n    proposalIndex\\n    eventName\\n    blockNumber\\n    timestamp\\n    extrinsicId\\n  }\\n}\",\"variables\":null,\"operationName\":\"MyQuery\"}`;
     const response = await fetchQuery(query);
-    return await response.json();
+    return (await response.json()).data.proposals;
   }
-
 }
 
 export default squidQuery
