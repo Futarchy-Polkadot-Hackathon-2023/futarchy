@@ -28,7 +28,6 @@ console.log(ZeitgeistManager);
 console.log(zeitgeist);
 
 import web2Creds from  "../.secrets/web2Creds.js";
-import { resolve } from "path";
 
 // sparse arrays - set by index, access by index, unset with delete keyword
 const emptyMarketsObject = {
@@ -171,7 +170,7 @@ const marketFromNewProposal = async proposal=> {
 const doCreateMarket = proposal=> new Promise((resolve,reject) => {
 
   try {
-    const marketCreationResult = zeitgeistManager.createMarket(marketCreationArguments);
+    const marketCreationResult = zeitgeist.createMarket(marketCreationArguments);
     if (marketCreationResult.success) {
       console.log('Successfully created market ',marketCreationResult.getMarketId());
       return { 
@@ -202,7 +201,7 @@ const postFromNewProposal = proposal =>{
   if (!hasLiveMarket(proposalIndex))
     throw new Error('attempted to create post but market is not live');
 
-  return `Most KSM treasury proposals pass on a tiny minority of KSM holders voting, which means little or no quality control on the\n`
+  return `Most KSM treasury proposals pass on a tiny minority of KSM holders voting, which means little or no quality control on the\n`+
   `proposals that make it through.\n`+
   `But we don't believe in crying over spilt KSM.\n`+
   `If you think this proposal should - or shouldn't - pass, then stake some ZTG on the outcome and start convincing people\n`+
@@ -244,6 +243,7 @@ const performActions= async toDos=> {
           // assuming market was successfully created..
           markets.deployed.live.push(market);
           const newPost = postFromNewProposal(proposal);
+          // no need to decorate here, since postFromNewProposal checks hasLiveMarket
           doCreatePost(newPost)
             .then()
             .catch(e=>{
