@@ -33,7 +33,7 @@ export class MarketCreationArguments {
         return `Will polkassembly treasury proposal #${this.polkassemblyTreasuryId} be successful?`;
     }
     createMarketDescription () {
-        return `This market is created automatically for the polkasembly treasury proposal Nr ${this.polkassemblyTreasuryId}.\n ${this.getPolkasemblyTreasuryUrl()}\n\n${this.polkassemblyProposalDescription}`;
+        return `${this.getPolkasemblyTreasuryUrl()} This market is created automatically for the polkasembly treasury proposal #${this.polkassemblyTreasuryId}. \n${this.polkassemblyProposalDescription}`;
     }
     createMarketSlug () {
         return `polkassembly-treasury-proposal-${this.polkassemblyTreasuryId}`;
