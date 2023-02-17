@@ -308,13 +308,6 @@ const isKnownProposal = proposalIndex=>
 const hasLiveMarket = proposalIndex=> 
   Boolean(markets.deployed.live[proposalIndex]);
  
-[263,264,290,92]
-  .forEach(id=>{
-    polkassemblyClient.get.title(id)
-      .then(title=> {console.log({id, title});})
-
-  })
-
 
 findTriggers()
   .then(performActions);
@@ -323,6 +316,8 @@ setInterval(()=>{
   findTriggers()
     .then(performActions);
 }, 5*60*1000);
+
+// TODO: add findTriggers trigger event to squid processor 
 
 
 // USAGE example (OLD ZeitgeistManager)
