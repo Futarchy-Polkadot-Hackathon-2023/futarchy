@@ -11,8 +11,10 @@ const exampleEventResponse =  {
   "beneficiary": "0xb1e8b074b1c82002a33e63338a04b974107769099111637275514fb0cd740978"
 };
 
+const GRAPH_QL_ENDPOINT = "http://localhost:4350/graphql";
+
 async function fetchQuery(query) {
-  return await fetch("http://localhost:4350/graphql", {
+  return await fetch(GRAPH_QL_ENDPOINT, {
     "headers": {
       "content-type": "application/json"
     },
