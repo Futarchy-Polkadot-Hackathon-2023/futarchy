@@ -186,10 +186,6 @@ const doCreateMarket = proposal=> new Promise((resolve,reject) => {
 
 })
 
-const doCreatePost = newPost=> new Promise((resolve,reject) => {
-  polkassemblyClient.commentOnReferendum(proposalIndex, commentText);
-})
-
 const postFromNewProposal = proposal =>{
   // convert the subsquid bounty event into data for a polkassembly post 
   // INPUT: an array of events concerning one proposalIndex, which will not certainly have Proposed as first element
