@@ -20,6 +20,9 @@
 */
 
 import fetch from "node-fetch";
+import webdriver from "selenium-webdriver";
+import chrome from "selenium-webdriver/chrome.js";
+import commentOnReferendum from "./polkassemblyPost.js";
 
 /* Mock Data Input */
 const dataInput = {
@@ -32,12 +35,28 @@ const dataOutput = {
   status: "true",
 };
 
+
+const titleXpath = '//*[@id="root"]/section/section/section/main/div/div/div/div[1]/div/div[1]/h2'
+const chromeOptions = new chrome.Options();
+const userAgent = 'user-agent=' + 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Safari/537.36'
+chromeOptions.addArguments(userAgent);
+chromeOptions.addArguments("--window-size=1920x1080");
+chromeOptions.addArguments("start-maximized");
+chromeOptions.addArguments("test-type");
+chromeOptions.addArguments("--js-flags=--expose-gc");
+chromeOptions.addArguments("--enable-precise-memory-info");
+chromeOptions.addArguments("--disable-popup-blocking");
+chromeOptions.addArguments("--disable-default-apps");
+chromeOptions.addArguments("--disable-infobars");
+chromeOptions.addArguments('--headless');
+
 /* Main function Declartion */
 class Polkassembly {
   /* Sets constants URL, username, passoword */
   constructor() {
     this.token = null;
-    this.URL = "https://polkadot.polkassembly.io/v1/graphql";
+    this.authedUrl = "https://polkadot.polkassembly.io/v1/graphql";
+    this.url = "https://kusama.polkassembly.io/referendum/";
     this.user = "lopake";
     this.password = "Hello-123";
     this.pleaseWait = "Promise.resolve";
@@ -47,7 +66,7 @@ class Polkassembly {
   async setToken() { 
     this.pleaseWait =  new Promise((resolve, reject)=> {
       try {
-        fetch(this.URL, {
+        fetch(this.authedUrl, {
           headers: {
             "content-type": "application/json",
           },
@@ -74,10 +93,10 @@ class Polkassembly {
 
   /* Post() takes an post_id and a comment. Both strings */
   /* Note: If changing User, authorId has to change probably */
-  async postComment(postId, comment) {
+  async postCommentbyPostId(postId, comment) {
     try {
       if (await this.set_token()) {
-        fetch(this.URL, {
+        fetch(this.authedUrl, {
           headers: {
             authorization: "Bearer " + this.token,
             "content-type": "application/json",
@@ -105,10 +124,14 @@ class Polkassembly {
     }
   }
 
+  // currently does NOT accept token for auth 
+  // commentOnReferendum(refId, commentText, auth={ user:USER, password: PASSWORD }) 
+  postCommentbyReferendumId = commentOnReferendum
+
   /* Logs out */
   async logout() {
     try {
-      let res = await fetch(this.URL, {
+      let res = await fetch(this.authedUrl, {
         headers: {
           authorization: "Bearer " + this.token,
           "content-type": "application/json",
@@ -121,6 +144,39 @@ class Polkassembly {
       console.log(error);
       return false;
     }
+  }
+
+  get= {
+    title: async refId=> {
+      const URL = this.url + refId;
+      let driver;
+
+      try {
+        driver = new webdriver.Builder()
+          .forBrowser("chrome")
+          .setChromeOptions(chromeOptions)
+          .build();
+      } catch (error) {
+          //
+      }
+
+      try {
+          driver.get(URL)
+          await driver.wait(webdriver.until.elementLocated(webdriver.By.xpath(titleXpath)),5*1000);
+          let titleText = await driver.findElement(webdriver.By.xpath(titleXpath)).getText();
+          titleText = titleText.split(' ').slice(1).join(' ') || null
+
+          await driver.close();
+          return titleText;
+      } catch (error) {
+          // comment out the try..catch to preserve the error and retyr after timeout
+          console.log(error);
+      }
+
+      await driver.close()
+      return null
+    }
+
   }
 }
 
