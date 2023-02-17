@@ -22,10 +22,22 @@ export class MarketCreationResult {
 
 
 export class MarketCreationArguments {
-    question;
-    description;
-    slug;
-    durationHours;
+    polkassemblyTreasuryId;
+    polkassemblyProposalDescription;
+    durationHours; // optional
+
+    getPolkasemblyTreasuryUrl() {
+        return `https://polkadot.polkassembly.io/treasury/${this.polkassemblyTreasuryId}`;
+    }
+    createMarketQuestion () {
+        return `Will polkassembly treasury proposal #${this.polkassemblyTreasuryId} be successful?`;
+    }
+    createMarketDescription () {
+        return `This market is created automatically for the polkasembly treasury proposal Nr ${this.polkassemblyTreasuryId}.\n ${this.getPolkasemblyTreasuryUrl()}\n\n${this.polkassemblyProposalDescription}`;
+    }
+    createMarketSlug () {
+        return `polkassembly-treasury-proposal-${this.polkassemblyTreasuryId}`;
+    }
 }
 
 export default MarketCreationResult

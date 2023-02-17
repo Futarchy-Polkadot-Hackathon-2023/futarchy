@@ -75,9 +75,9 @@ export default class ZeitgeistManager {
             },
             metadata: {
                 __meta: "markets",
-                question: marketCreationArguments.question,
-                description: marketCreationArguments.description,
-                slug: marketCreationArguments.slug,
+                question: marketCreationArguments.createMarketQuestion(),
+                description: marketCreationArguments.createMarketDescription(),
+                slug: marketCreationArguments.createMarketSlug(),
                 categories: [
                     { name: "yes", ticker: "Y" },
                     { name: "no", ticker: "N" },
