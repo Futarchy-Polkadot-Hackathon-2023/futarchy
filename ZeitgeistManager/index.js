@@ -1,16 +1,13 @@
-import {create, mainnet, batterystation, ZTG, swapFeeFromFloat} from "@zeitgeistpm/sdk";
-import { IPFS } from "@zeitgeistpm/web3.storage";
+import {create, mainnet, batterystation } from "@zeitgeistpm/sdk";
 import { Keyring } from "@polkadot/keyring";
 import {cryptoWaitReady} from  "@polkadot/util-crypto"
-import { ZtgConfiguration } from "./ztgConfiguration.js"
-import { MarketStatus } from "@zeitgeistpm/indexer";
-import * as dotenv from 'dotenv';
+import ZtgConfiguration from "./ztgConfiguration.js"
 import MarketCreationResult from "./models.js"
+import * as dotenv from 'dotenv';
+
 dotenv.config()
 
-
-
-class ZtgManager {
+export default class ZtgManager {
     async getSdk() {
         if (await this.isMainnet()){
             return await create(mainnet());
@@ -97,20 +94,3 @@ class ZtgManager {
         return marketCreationResult;
     }
 }
-
-const manager = new ZtgManager();
-
-// manager.createMarket({
-//     question: 'Will we complete a project by 12:00CET 17/2/23',
-//     description: 'Will the futarchy team in PolkadotGlobal EU Hack actually get theor bot submitted on time?',
-//     slug: 'will-complete-by-17.2.23',
-//     durationHours : 24
-// })
-
-// manager.getMarketById2(573)
-//     .then(console.log)
-//     .catch(console.error)
-//     .finally(() => process.exit());
-
-
-export default ZtgManager
