@@ -3,7 +3,7 @@ import {swapFeeFromFloat, ZTG} from "@zeitgeistpm/sdk";
 dotenv.config()
 
 
-export class ZtgConfiguration {
+export default class ZtgConfiguration {
     static signerSeed;
     static defaultPoolAmount = ZTG.mul(100).toString();
     static defaultSwapFee = swapFeeFromFloat(1).toString();

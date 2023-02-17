@@ -1,46 +1,62 @@
-import {create, mainnet, batterystation, ZTG, swapFeeFromFloat} from "@zeitgeistpm/sdk";
-import { IPFS } from "@zeitgeistpm/web3.storage";
+import {create, mainnet, batterystation } from "@zeitgeistpm/sdk";
 import { Keyring } from "@polkadot/keyring";
 import {cryptoWaitReady} from  "@polkadot/util-crypto"
-import { ZtgConfiguration } from "./ztgConfiguration.js"
-import { MarketStatus } from "@zeitgeistpm/indexer";
-import * as dotenv from 'dotenv';
+import ZtgConfiguration from "./ztgConfiguration.js"
 import MarketCreationResult from "./models.js"
+import * as dotenv from 'dotenv';
+
 dotenv.config()
 
+export default class ZeitgeistManager {
 
+    constructor() {
+        this.mainnet = process.env.mainnet === "true";
 
-class ZtgManager {
-    async getSdk() {
-        if (await this.isMainnet()){
-            return await create(mainnet());
+        if (this.mainnet){
+            this.sdk = create(mainnet());
+            console.log(`ZeitgeistManager initialized on the mainnet`)
         } else {
-            return await create(batterystation());
+            this.sdk = create(batterystation());
+            console.log(`ZeitgeistManager initialized on the battery station testnet`)
         }
+
     }
 
-    async isMainnet() {
-        return process.env.mainnet && process.env.mainnet === "true";
+    async getSdk() {
+        return this.sdk;
+    }
+
+    async getSigner() {
+        await cryptoWaitReady()
+        const keyring = new Keyring({ ss58Format: 73, type: 'sr25519' }) // battery station, zeitgeist testnet format
+        return keyring.addFromMnemonic(ZtgConfiguration.signerSeed);
     }
 
     async getMarketById(marketId) {
         const sdk = await this.getSdk();
-        return await sdk.model.markets.get({ marketId: marketId });
+        return (await sdk.model.markets.get({ marketId: marketId })).unwrap();
     }
 
 
     async listAllMarkets() {
         const sdk = await this.getSdk();
         return await sdk.model.markets.list();
-        // return await sdk.model.markets.get();
+    }
+
+    async listMarketsOwnedBySigner() {
+        const signer = await this.getSigner()
+        const sdk = await this.getSdk();
+        return await sdk.model.markets.list({
+            where: {
+                creator_eq: signer.address
+            },
+        })
     }
 
     async createMarket(marketCreationArguments) {
         const sdk = await this.getSdk();
 
-        await cryptoWaitReady()
-        const keyring = new Keyring({ ss58Format: 73, type: 'sr25519' }) // battery station, zeitgeist testnet format
-        const signer = keyring.addFromMnemonic(ZtgConfiguration.signerSeed);
+        const signer = await this.getSigner()
         console.log(`Signer address to be used for market creation ${signer.address}`)
 
         const durationHours = marketCreationArguments.durationHours ? marketCreationArguments.durationHours : ZtgConfiguration.defaultDurationHours;
@@ -85,32 +101,12 @@ class ZtgManager {
         marketCreationResult.market = market;
         marketCreationResult.pool = pool;
         marketCreationResult.success = true;
-        marketCreationResult.isMainnet = await this.isMainnet();
+        marketCreationResult.isMainnet = this.mainnet;
 
-        console.log(`Market created on ${await this.isMainnet()? "mainnet" : "battery station"} with id: ${market.marketId}. Pool created with id: ${pool.poolId}`);
+        console.log(`Market created on ${this.mainnet? "mainnet" : "battery station"} with id: ${marketCreationResult.getMarketId()}. Pool created with id: ${marketCreationResult.getPoolId()}`);
         console.log(`View new market at ${marketCreationResult.getUrl()}`);
+        console.log(`marketCreationResult: ${marketCreationResult}`)
 
-        console.log(marketCreationResult);
-        console.log(marketCreationResult.getMarketId());
-        console.log(`https://test.staging.zeitgeist.pm/markets/${marketCreationResult.getMarketId()}`);
-        console.log(marketCreationResult.getPoolId());
         return marketCreationResult;
     }
 }
-
-const manager = new ZtgManager();
-
-// manager.createMarket({
-//     question: 'Will we complete a project by 12:00CET 17/2/23',
-//     description: 'Will the futarchy team in PolkadotGlobal EU Hack actually get theor bot submitted on time?',
-//     slug: 'will-complete-by-17.2.23',
-//     durationHours : 24
-// })
-
-// manager.getMarketById2(573)
-//     .then(console.log)
-//     .catch(console.error)
-//     .finally(() => process.exit());
-
-
-export default ZtgManager

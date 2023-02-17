@@ -15,7 +15,7 @@ import polkassemblyPosts from "../cache/posts.json" assert { type: "json" };
 import postContents from "../content/postContents.json" assert { type: "json" };
 
 
-// const zeitgeist = ZeitgeistManager();
+const zeitgeistManager = new ZeitgeistManager();
 
 console.log('knownProposals', knownProposals);
 console.log('lastKnownKsmBlock', lastKnownKsmBlock);
@@ -24,7 +24,7 @@ console.log('posts', polkassemblyPosts);
 
 console.log(squidQuery);
 console.log(polkassemblyClient);
-console.log(ZeitgeistManager);
+console.log(zeitgeistManager);
 // console.log(zeitgeist);
 
 import web2Creds from  "../.secrets/web2Creds.js";
@@ -171,13 +171,13 @@ const marketFromNewProposal = async proposal=> {
 const doCreateMarket = proposal=> new Promise((resolve,reject) => {
 
   try {
-    const marketCreationResult  = ZeitgeistManager.createMarket(marketCreationArguments);
+    const marketCreationResult = zeitgeistManager.createMarket(marketCreationArguments);
     if (marketCreationResult.success) {
       console.log('Successfully created market ',marketCreationResult.getMarketId());
       return { 
         marketId : marketCreationResult.getMarketId(),
-        poolId : marketCreationResult.poolId(),
-        link : `https://test.staging.zeitgeist.pm/markets/${marketCreationResult.getMarketId()}`,
+        poolId : marketCreationResult.getPoolId(),
+        link : marketCreationResult.getUrl(),
         marketCreationResult
       };
     }
