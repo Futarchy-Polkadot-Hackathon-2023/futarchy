@@ -1,4 +1,4 @@
-// import squidQuery from "../subsquid-indexer/src/queries.mjs";
+//import squidQuery from "../subsquid-indexer/src/queries.mjs";
 import { polkassemblyClient, squidQuery, zeitgeist } from "./graphqlClient.js";
 
 console.log(squidQuery);
