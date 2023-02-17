@@ -51,6 +51,10 @@
 
 Futarchy - we're incentivising altruistic governance!
 
+A short introduction in the Futurachy.
+
+Watch [here](./futarchyFTW.mp4)
+
 #### Summary
 
 1. It spins up a Indexer, which graps Data from the from Kusama Chain.
