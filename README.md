@@ -1,47 +1,140 @@
-Please add...
-. links to any significant libraries we import or use (eg IPFS)
-. credit for any copied code
-. separate instructions to install and run in the *installation* and *run* sections
+<a name="readme-top"></a>
+
+<br />
+<div align="center">
+  <a href="https://github.com/polkahack/futarchy">
+    <img src="https://www.polkadotglobalseries.com/wp-content/uploads/2022/12/KV-logo.png" alt="Logo" width="80" height="80">
+  </a>
+
+<h3 align="center">Futurachy - Main</h3>
+  <p align="center">
+    <a href="https://github.com/polkahack/futarchy">Futurachy</a> creates incentives for goverments. </a>
+    <br />
+    <a href="https://github.com/PolkaHack/Things" name="demo">Quickstart</a>
+    ·
+    <a href="https://github.com/PolkaHack/futarchy/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/polkahack/futarchy/issues">Request Feature</a>
+  </p>
+</div>
+
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#Screenshot">Screenshot</a></li>
+        <li><a href="#Description">Description</a></li>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#quick-start">Quickstart</a></li>
+        <li><a href="#deep-dive">Deep Dive</a></li>
+      </ul>
+    </li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
+
+## About The Project
+
+### Screenshot
+
+![screenshot](./screenshot.png)
+
+### Description
+
+Futurachy creates incentives to for governments.
+
+This is a Quickstart of the Project [Futurachy](https://github.com/PolkaHack/futarchy).
+Quickstart is a simplified version of the inner workings.
+
+#### Summary
+
+1. It spins up a Indexer, which graps Data from the from Kusama Chain.
+2. It creates a graphQL endpoint.
+3. It fetches extra data from polkassembly based on the graphQL data.
+4. It creates markets based on 3 cases. 
+   - Case 1: If no market exist
+   - Case 2: If new proposal appears 
+   - Case 3: If proposal gets updated.
+5. It creates a Link to the new market.
+6. It posts a comment in [polkassembly](https://polkadot.polkassembly.io/) with a link to the created Market.
+7. It keeps running.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Built With
+
+[![NodeJs][nodejs]][nodejs-url]
+[![Subsquid][subsquid]][subsquid-url]
+[![Zeitgeist][zeitgeist]][zeitgeist-url]
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Getting Started
+
+### Quickstart
+
+Go to to our Quickstart Repo. RIGHT NOW : )
+
+-->[QUICKSTART](https://github.com/PolkaHack/Things)<--
+
+Quickstart is a simplistic version of Project Futurachy.
+
+
+### Get Started
+
+- `git clone ...`
  
-_____________________________________________________________________
+- `cd package1`
+ 
+- `npm ci`
+ 
+- `./setup_package1`
+ 
+- `cd ..`
 
-# futarchy
-Futarchy bot - incentivises participation in KSM treasury poropsals by creating Zeitgeist markets on their outcomes
+- `cd package2`
+ 
+- `npm ci`
 
-### Install dependencies
-> git clone ...
-> 
-> cd package1
-> 
-> npm ci
-> 
-> ./setup_package1
-> 
-> cd ..
-> 
-> cd package2
-> 
-> npm ci
-> 
-> ./setup_package2
+- `./setup_package2`
 
-### Run
-> cd futarchy
-> 
-> npm start-server
 
-##### Fresh code
-([Original repo](https://github.com/PolkaHack/Things/tree/main/)
+## Contact
 
-##### Derivative code
-[Subsquid](subsquid.io) and their [templates](https://github.com/subsquid-labs/squid-substrate-templates)
-[Zeitgeist SDK](https://github.com/zeitgeistpm/tools)
-[GraphQL](graphql.org)
+Sergey Gerodes - [LinkedIn](https://www.linkedin.com/in/sgerodes/)  
+K Gunjan - gunjan.cn@gmail.com - [LinkedIn](https://in.linkedin.com/in/gunjan321)  
+Frank Bevr - frank_dierolf@web.de - Discord: `FrankBevr#9593`  
+Morkeltry - @morkeltry - He will find you
 
-##### Shout outs
-@Xylodrone for suggesting the use case after months of frustration with the democratic process ;)
-@RaekwonIII for great mentoring :D
-@Bobit for support on Zeitgeist
-[Robert Hanson](https://mason.gmu.edu/~rhanson/futarchy.html) for conceptualising a positive vision of fuarchy that's not a libertairian dystopia
+Project Link: [Futurachy](https://github.com/polkahack/futarchy)
 
-Subsquid and Subscan for making it way easier to navigate events before you know what your squid should be looking for
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Acknowledgments
+
+- [Massimo Luraschi](https://github.com/RaekwonIII) 
+- [Yornaath](https://github.com/yornaath) 
+- [Robert Hanson](https://mason.gmu.edu/~rhanson/futarchy.html)
+- [Xylodrone]()
+- [Bobit]()
+- [Zeitgeist SDK](https://github.com/zeitgeistpm/tools)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- MARKDOWN LINKS & IMAGES -->
+
+[product-screenshot]: images/screenshot.png
+[nodejs]: https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white
+[nodejs-url]: https://nodejs.org
+[zeitgeist]: https://img.shields.io/badge/Zeitgeist-Parachain-black?style=for-the-badge&logo=polkadot
+[zeitgeist-url]: https://zeitgeist.pm/
+[subsquid]: https://img.shields.io/badge/Subsquid-ChainIndexer-black?style=for-the-badge&logo=OctopusDeploy
+[subsquid-url]: https://www.subsquid.io/
