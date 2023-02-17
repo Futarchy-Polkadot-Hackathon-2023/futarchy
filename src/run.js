@@ -15,7 +15,7 @@ import polkassemblyPosts from "../cache/posts.json" assert { type: "json" };
 import postContents from "../content/postContents.json" assert { type: "json" };
 
 
-const zeitgeist = ZeitgeistManager();
+const zeitgeist = new ZeitgeistManager();
 
 console.log('knownProposals', knownProposals);
 console.log('lastKnownKsmBlock', lastKnownKsmBlock);
