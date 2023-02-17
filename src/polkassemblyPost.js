@@ -67,7 +67,7 @@ async function commentOnReferendum(refId, commentText, auth={ user:USER, passwor
     return false
 }
 
-commentOnReferendum('263', 'testing123')
-.then(data => console.log(data))
+// commentOnReferendum('263', 'testing123')
+// .then(data => console.log(data))
 
 export default commentOnReferendum
