@@ -57,7 +57,7 @@ async function commentOnReferendum(refId, commentText, auth={ user:USER, passwor
         await driver.wait(webdriver.until.elementLocated(webdriver.By.xpath(comment_area_xpath)),5*1000);
 
         await driver.close()
-        return true
+        return URL
 
     }catch (error) {
         console.log(error)

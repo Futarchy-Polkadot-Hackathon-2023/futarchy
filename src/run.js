@@ -164,7 +164,7 @@ const marketFromNewProposal = async proposal=> {
   const slug = `KSM-treasury-prop-${proposalIndex}`;
   
   // await description;
-  return { endBlock, selfDescribedTitle, description, question, slug }
+  return { proposalIndex, endBlock, selfDescribedTitle, description, question, slug }
 }
 
 const doCreateMarket = proposal=> new Promise((resolve,reject) => {
@@ -186,9 +186,8 @@ const doCreateMarket = proposal=> new Promise((resolve,reject) => {
 
 })
 
-const doCreatePost = proposal=> new Promise((resolve,reject) => {
-
-
+const doCreatePost = newPost=> new Promise((resolve,reject) => {
+  polkassemblyClient.commentOnReferendum(proposalIndex, commentText);
 })
 
 const postFromNewProposal = proposal =>{
@@ -244,8 +243,10 @@ const performActions= async toDos=> {
           markets.deployed.live.push(market);
           const newPost = postFromNewProposal(proposal);
           // no need to decorate here, since postFromNewProposal checks hasLiveMarket
-          doCreatePost(newPost)
-            .then()
+          polkassemblyClient.commentOnReferendum(proposal.proposalIndex, newPost)
+            .then(url=>{
+              console.log('Posted on ', url);
+            })
             .catch(e=>{
               console.log(e);
               polkassemblyPosts.todo.push(newPost); 
