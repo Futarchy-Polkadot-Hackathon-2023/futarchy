@@ -8,7 +8,7 @@
 
 <h3 align="center">Futurachy - Main</h3>
   <p align="center">
-    <a href="https://github.com/polkahack/futarchy">Futurachy</a> creates incentives for goverments. </a>
+    <a href="https://github.com/polkahack/futarchy">Futurachy</a>Futarchy - we're incentivising altruistic governance!</a>
     <br />
     <a href="https://github.com/PolkaHack/Things" name="demo">Quickstart</a>
     ·
@@ -33,7 +33,7 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#quick-start">Quickstart</a></li>
-        <li><a href="#deep-dive">Deep Dive</a></li>
+        <li><a href="#usage">Usage</a></li>
       </ul>
     </li>
     <li><a href="#contact">Contact</a></li>
@@ -49,19 +49,16 @@
 
 ### Description
 
-Futurachy creates incentives to for governments.
-
-This is a Quickstart of the Project [Futurachy](https://github.com/PolkaHack/futarchy).
-Quickstart is a simplified version of the inner workings.
+Futarchy - we're incentivising altruistic governance!
 
 #### Summary
 
 1. It spins up a Indexer, which graps Data from the from Kusama Chain.
 2. It creates a graphQL endpoint.
 3. It fetches extra data from polkassembly based on the graphQL data.
-4. It creates markets based on 3 cases. 
+4. It creates markets based on 3 cases.
    - Case 1: If no market exist
-   - Case 2: If new proposal appears 
+   - Case 2: If new proposal appears
    - Case 3: If proposal gets updated.
 5. It creates a Link to the new market.
 6. It posts a comment in [polkassembly](https://polkadot.polkassembly.io/) with a link to the created Market.
@@ -83,29 +80,43 @@ Quickstart is a simplified version of the inner workings.
 
 Go to to our Quickstart Repo. RIGHT NOW : )
 
--->[QUICKSTART](https://github.com/PolkaHack/Things)<--
+[QUICKSTART](https://github.com/PolkaHack/Things)
 
 Quickstart is a simplistic version of Project Futurachy.
 
+### Usage
 
-### Get Started
+```sh
+git clone ...
+```
 
-- `git clone ...`
- 
-- `cd package1`
- 
-- `npm ci`
- 
-- `./setup_package1`
- 
-- `cd ..`
+```sh
+cd package1
+```
 
-- `cd package2`
- 
-- `npm ci`
+```sh
+npm ci
+```
 
-- `./setup_package2`
+```sh
+./setup_package1`
+```
 
+```sh
+cd ..
+```
+
+```sh
+cd package2
+```
+
+```sh
+npm ci
+```
+
+```sh
+./setup_package2
+```
 
 ## Contact
 
@@ -120,8 +131,8 @@ Project Link: [Futurachy](https://github.com/polkahack/futarchy)
 
 ## Acknowledgments
 
-- [Massimo Luraschi](https://github.com/RaekwonIII) 
-- [Yornaath](https://github.com/yornaath) 
+- [Massimo Luraschi](https://github.com/RaekwonIII)
+- [Yornaath](https://github.com/yornaath)
 - [Robert Hanson](https://mason.gmu.edu/~rhanson/futarchy.html)
 - [Xylodrone]()
 - [Bobit]()
