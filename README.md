@@ -53,8 +53,6 @@ Futarchy - we're incentivising altruistic governance!
 
 #### Summary
 
-1- been proposed, or, 2-  awarded, rejected or approved for spending:
-
 1. It spins up a Indexer, which graps Data from the from Kusama Chain.
 2. It creates a graphQL endpoint.
 3. It fetches extra data from polkassembly based on the graphQL data.
@@ -88,36 +86,28 @@ Go to to our Quickstart Repo. RIGHT NOW : )
 
 ### Usage
 
+./subsquid-indexer
+Terminal A
 ```sh
-git clone ...
+ cd ./subsquid-indexer
+ npm install
+ source .env
+ npx sqd up
+ npx sqd process 
 ```
 
+Terminal B
 ```sh
-cd package1
+cd ./subsquid-indexer
+npx sqd server
 ```
 
+Terminal C
 ```sh
-npm ci
-```
-
-```sh
-./setup_package1`
-```
-
-```sh
-cd ..
-```
-
-```sh
-cd package2
-```
-
-```sh
-npm ci
-```
-
-```sh
-./setup_package2
+npm install
+echo "seed=YOUR_SEED_WITH_ZTG_TOKENS_ON_BATERRY_TEST_NEXT" >> .env
+source .env
+node ./src/run.js
 ```
 
 ## Contact
