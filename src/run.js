@@ -170,7 +170,7 @@ const marketFromNewProposal = async proposal=> {
 const doCreateMarket = proposal=> new Promise((resolve,reject) => {
 
   try {
-    const marketCreationResult = zeitgeist.createMarket(marketCreationArguments);
+    const marketCreationResult = zeitgeist.createMarket(proposal);
     if (marketCreationResult.success) {
       console.log('Successfully created market ',marketCreationResult.getMarketId());
       return { 
